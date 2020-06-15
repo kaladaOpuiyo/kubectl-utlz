@@ -1,4 +1,4 @@
-# kube-utlz
+# kubectl-utlz
 
 This plug-in extends the kubectl functionality by returning memory and cpu information for all pods scheduled on a Node.
 
