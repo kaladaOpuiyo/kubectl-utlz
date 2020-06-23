@@ -71,9 +71,8 @@ var rootCmd = &cobra.Command{
 			fmt.Fprint(w, err)
 			os.Exit(1)
 		}
-		nodeNameSelector := "spec.nodeName="
 
-		nodeMetricsByPod := metrics.NewNodeMetricsByPod(clientset, metricsClientset, nodeName, nodeNameSelector, sortBy, view)
+		nodeMetricsByPod := metrics.NewNodeMetricsByPod(clientset, metricsClientset, nodeName, sortBy, view)
 
 		podMetrics, err := nodeMetricsByPod.GetPodMetrics()
 		if err != nil {

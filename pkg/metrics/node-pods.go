@@ -5,6 +5,7 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/kubernetes"
 	metricsv1beta1 "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 	metricsv "k8s.io/metrics/pkg/client/clientset/versioned"
@@ -46,7 +47,6 @@ type NodeMetricsByPod struct {
 	Clientset        *kubernetes.Clientset
 	MetricsClientset *metricsv.Clientset
 	Name             string
-	Selector         string
 	SortBy           string
 	View             string
 }
@@ -57,7 +57,6 @@ func NewNodeMetricsByPod(clientset *kubernetes.Clientset, metricsClientset *metr
 		Clientset:        clientset,
 		MetricsClientset: metricsClientset,
 		Name:             name,
-		Selector:         selector,
 		SortBy:           sortBy,
 		View:             view,
 	}
@@ -129,8 +128,14 @@ func (n *NodeMetricsByPod) getPodMetrics() ([]PodMetric, error) {
 
 func (n *NodeMetricsByPod) getPodsByNodeName() (*v1.PodList, error) {
 
+	fieldSelector, err := fields.ParseSelector("spec.nodeName=" + n.Name + ",status.phase!=" + string(v1.PodSucceeded) + ",status.phase!=" + string(v1.PodFailed))
+
+	if err != nil {
+		return nil, err
+	}
+
 	pods, err := n.Clientset.CoreV1().Pods("").List(metav1.ListOptions{
-		FieldSelector: n.Selector + n.Name,
+		FieldSelector: fieldSelector.String(),
 	})
 	if err != nil {
 		return nil, err
