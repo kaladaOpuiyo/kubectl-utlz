@@ -52,7 +52,7 @@ type NodeMetricsByPod struct {
 }
 
 // NewNodeMetricsByPod ...
-func NewNodeMetricsByPod(clientset *kubernetes.Clientset, metricsClientset *metricsv.Clientset, name, selector, sortBy string, view string) *NodeMetricsByPod {
+func NewNodeMetricsByPod(clientset *kubernetes.Clientset, metricsClientset *metricsv.Clientset, name, sortBy string, view string) *NodeMetricsByPod {
 	return &NodeMetricsByPod{
 		Clientset:        clientset,
 		MetricsClientset: metricsClientset,
